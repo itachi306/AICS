@@ -1,0 +1,44 @@
+from sklearn.model_selection import train_test_split
+from PIL import Image
+import os
+import shutil
+
+# Replace 'path/to/your/dataset' with the actual path to your dataset
+dataset_path = 'dataset'
+
+# Get a list of all image files in the dataset path
+image_files = [file for file in os.listdir(dataset_path) if file.endswith(('.jpg', '.jpeg', '.png'))]
+
+# Initialize lists to store image paths and corresponding labels
+image_paths = []
+labels = []
+
+# Assuming each class is represented by a single file in the dataset path
+for image_file in image_files:
+    image_path = os.path.join(dataset_path, image_file)
+    image_paths.append(image_path)
+    
+    # Extract label from the filename or provide labels in another way
+    # Example: Assuming the class name is part of the filename before the first underscore
+    label = image_file.split('_')[0]
+    labels.append(label)
+
+# Split the data into training and test sets (e.g., 80% training, 20% test)
+X_train, X_test, y_train, y_test = train_test_split(image_paths, labels, test_size=0.2, random_state=42)
+
+# Define the paths for the training and test folders
+train_folder = 'path/to/train/folder'
+test_folder = 'path/to/test/folder'
+
+# Create the training and test folders if they don't exist
+os.makedirs(train_folder, exist_ok=True)
+os.makedirs(test_folder, exist_ok=True)
+
+# Copy images to the appropriate folders based on the split
+for image_path, label in zip(X_train, y_train):
+    destination = os.path.join(train_folder, f'{label}_{os.path.basename(image_path)}')
+    shutil.copy(image_path, destination)
+
+for image_path, label in zip(X_test, y_test):
+    destination = os.path.join(test_folder, f'{label}_{os.path.basename(image_path)}')
+    shutil.copy(image_path, destination)

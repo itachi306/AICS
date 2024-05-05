@@ -1,0 +1,37 @@
+import numpy as np
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.naive_bayes import MultinomialNB
+
+df = pd.read_csv("./spam.csv")
+df.sample(5)
+
+df.head()
+
+df.groupby('Category').describe()
+
+df['spam'] = df['Category'].apply(lambda x: 1 if x == "spam" else 0) 
+
+X_train, X_test, y_train, y_test = train_test_split(df.Message, df.spam, test_size=0.2, random_state=2)
+
+cv = CountVectorizer()
+X_train_transform = cv.fit_transform(X_train.values)
+X_test_transform = cv.transform(X_test)
+
+model = MultinomialNB()
+model.fit(X_train_transform, y_train)
+y_pred = model.predict(X_test_transform)
+
+model.score(X_test_transform, y_test)
+
+# Define a non-spam message
+text = ['Hi ! How are you ?']
+# Transform the non-spam message using the CountVectorizer
+text_transformed = cv.transform(text)
+# Make prediction
+prediction = model.predict(text_transformed)
+# Mapping the prediction to human-readable labels
+prediction_label = "Spam" if prediction[0] == 1 else "Not Spam"
+# Output the prediction
+print(f"The message is predicted to be: {prediction_label}")

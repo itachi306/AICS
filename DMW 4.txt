@@ -1,0 +1,22 @@
+create table sales_data (
+	id INT AUTO_INCREMENT PRIMARY KEY,
+  	date DATE,
+  	product VARCHAR(50),
+  	category VARCHAR(50),
+  	amount DECIMAL(10,2)
+);
+
+INSERT INTO sales_data(date , product , category ,amount ) VALUES
+('2024-01-01' , 'Product A' , 'Category X' , 100),
+('2024-01-02' , 'Product B' , 'Category Y' , 150),
+('2024-01-03' , 'Product C' , 'Category X' , 200),
+('2024-01-04' , 'Product A' , 'Category Z' , 120),
+('2024-01-05' , 'Product B' , 'Category Y' , 180);
+
+SELECT * FROM sales_data WHERE category = 'Category X'; //Slice
+
+SELECT * FROM sales_data WHERE category = 'Category X' AND product ='Product A'; //DIce
+
+SELECT category , SUM(amount) AS total_sales FROM sales_data GROUP By category; //Rollup
+
+SELECT product , SUM(amount) AS total_sales FROM sales_data WHERE category='Category X' GROUP By product; //Drill Down
